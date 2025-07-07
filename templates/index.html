@@ -1,48 +1,176 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+  <meta charset="UTF-8">
   <title>Fantasy Book Chatbot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
   <style>
-    body { font-family: sans-serif; background-color: #fefefe; padding: 2rem; }
-    input[type="text"] { width: 60%; padding: 0.5rem; }
-    button { padding: 0.5rem 1rem; }
-    .chat-log { margin-top: 2rem; }
-    .chat-entry { margin-bottom: 1rem; }
-    .chat-entry p { margin: 0.2rem 0; }
-    .book-results { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
-    .book { border: 1px solid #ddd; padding: 1rem; border-radius: 8px; width: 200px; text-align: center; }
-    .book img { width: 120px; height: auto; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f4f6f9;
+      color: #333;
+      padding: 2rem;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #2c3e50;
+    }
+
+    form {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    button {
+      background-color: rgb(62, 174, 245);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1.25rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: rgb(35, 161, 239);
+    }
+
+    .chat-log {
+      margin-top: 2rem;
+      border-top: 1px solid #ddd;
+      padding-top: 1.5rem;
+    }
+
+    .chat-entry {
+      background: white;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
+    }
+
+    .chat-entry p {
+      margin: 0.4rem 0;
+    }
+
+    .chat-entry strong {
+      color: #1e293b;
+    }
+
+    .book-results {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    .book {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 1rem;
+      width: 200px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s;
+    }
+
+    .book:hover {
+      transform: translateY(-4px);
+    }
+
+    .book img {
+      width: 120px;
+      height: auto;
+      margin-bottom: 0.5rem;
+      border-radius: 4px;
+    }
+
+    .book p {
+      font-size: 0.9rem;
+      margin: 0.3rem 0;
+    }
+
+    .book strong {
+      font-size: 1rem;
+      color: #2d3748;
+    }
+
+    .book em {
+      color: #64748b;
+    }
+
+    .related-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      color: #374151;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
   </style>
 </head>
+
 <body>
-  <h1>📚 Fantasy Book Chatbot</h1>
+  <h1><i class="fas fa-hat-wizard"></i> Fantasy Book Chatbot</h1>
 
   <form method="post">
     <input type="text" name="question" placeholder="Ask me anything about fantasy books..." required>
-    <button type="submit">Ask</button>
+    <button type="submit"><i class="fas fa-paper-plane"></i> Ask</button>
   </form>
 
   {% if chat %}
-    <div class="chat-log">
-      {% for pair in chat %}
-        <div class="chat-entry">
-          <p><strong>You:</strong> {{ pair.question }}</p>
-          <p><strong>Bot:</strong> {{ pair.answer }}</p>
-        </div>
-      {% endfor %}
+  <div class="chat-log">
+    {% for pair in chat %}
+    <div class="chat-entry">
+      <p><strong>You:</strong></p>
+      <p>{{ pair.question }}</p>
+      <p><strong>Bot:</strong> {{ pair.answer | safe }}</p>
     </div>
+    {% endfor %}
+  </div>
   {% endif %}
 
   {% if books %}
-    <h2>🔎 Related Books</h2>
-    <div class="book-results">
-      {% for book in books %}
-        <div class="book">
-          <img src="{{ book.image }}" alt="cover">
-          <p><strong>{{ book.title }}</strong></p>
-        </div>
-      {% endfor %}
+  <h2 class="related-title"><i class="fas fa-book-open-reader"></i> Related Books</h2>
+  <div class="book-results">
+    {% for book in books %}
+    <div class="book">
+      <img src="{{ book.image }}" alt="cover">
+      <p><strong>{{ book.title }}</strong></p>
+      <p><em>by {{ book.author }}</em></p>
+      <p><i class="fas fa-star text-yellow-400"></i> {{ book.rating_score }} ({{ book.rating_count }} ratings)</p>
+      <p>{{ book.description }}</p>
     </div>
+    {% endfor %}
+  </div>
   {% endif %}
 </body>
+
 </html>

@@ -9,6 +9,8 @@ from chatbot import load_books, create_faiss_index
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
+import markdown
+
 
 # Load .env
 load_dotenv()
@@ -44,18 +46,23 @@ async def home(request: Request):
 
 @app.post("/", response_class=HTMLResponse)
 async def chat(request: Request, question: str = Form(...)):
-    result = qa_chain({"question": question})
-    answer = result["answer"]
+    result = qa_chain.invoke({"question": question})
+    raw_answer = result["answer"]
+    answer = markdown.markdown(raw_answer)
 
     # Store user + bot message
     chat_log.append({"question": question, "answer": answer})
 
     # Fetch retrieved docs
-    docs = retriever.get_relevant_documents(question)
+    docs = retriever.invoke(answer)
     books = [
         {
             "title": doc.metadata.get("title"),
             "image": doc.metadata.get("image_url"),
+            "author": doc.metadata.get("author"),
+            "description": doc.metadata.get("description"),
+            "rating_score": doc.metadata.get("rating_score"),
+            "rating_count": doc.metadata.get("rating_count"),
             "text": doc.page_content
         }
         for doc in docs

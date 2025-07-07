@@ -10,7 +10,7 @@ db = client["fantasy_books_db"]
 collection = db["books"]               
 
 # ---- Step 2: Load JSON ----
-with open("./backend/data/cleaned_fantasy_books.json", "r", encoding="utf-8") as f:
+with open("./data/cleaned_fantasy_books.json", "r", encoding="utf-8") as f:
     books_data = json.load(f)
 
 # ---- Step 3: Optional - Clear existing data ----

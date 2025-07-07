@@ -12,7 +12,7 @@ def load_books(json_path: str):
         full_text = f"""
 Title: {book.get('title', '')}
 Author: {book.get('author', '')}
-Description: {book.get('description', '')}
+Description: {book.get('description', '') if book.get('description', '') else ', '.join(book.get('subjects', []))[:300]}
 Publisher: {book.get('publisher', '')}
 Language: {book.get('language', '')}
 Rating: {book.get('rating_score', '')} ({book.get('rating_count', '')} votes)

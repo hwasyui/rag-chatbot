@@ -13,7 +13,7 @@ options.add_argument("--headless")
 driver = webdriver.Chrome(options=options)
 
 books = []
-DATA_FILE = "backend/data/fantasy_books.json"
+DATA_FILE = "data/fantasy_books.json"
 BASE_URL = "https://openlibrary.org/search?subject=Fantasy&sort=readinglog&page={}"
 
 # Load existing data if available
@@ -21,7 +21,7 @@ if os.path.exists(DATA_FILE):
     with open(DATA_FILE, "r", encoding="utf-8") as f:
         books = json.load(f)
 
-for page in range(1, 201): 
+for page in range(181, 201): 
     print(f"\n=== Scraping page {page} ===")
     driver.get(BASE_URL.format(page))
     WebDriverWait(driver, 10).until(
@@ -46,10 +46,22 @@ for page in range(1, 201):
             driver.execute_script("arguments[0].click();", link)
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
 
+            # Click the arrow to expand descriptions
+            try:
+                toggle = driver.find_element(By.XPATH, "//button[contains(@class, 'read-more__toggle--more')]")
+                driver.execute_script("arguments[0].click();", toggle)
+                WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "button.read-more__toggle--less"))
+                )
+            except NoSuchElementException:
+                pass  
+
             # Description
             try:
-                desc_elem = driver.find_element(By.CSS_SELECTOR, "div.read-more__content p")
-                description = desc_elem.text.strip()
+                desc_elems = driver.find_elements(By.CSS_SELECTOR, "div.read-more__content p")
+                description = " ".join([elem.text.strip() for elem in desc_elems if elem.text.strip()])
+                if not description:
+                    description = "No description"
             except NoSuchElementException:
                 description = "No description"
 
@@ -135,7 +147,6 @@ for page in range(1, 201):
 driver.quit()
 
 # Save to file
-with open("backend/data/fantasy_books.json", "w", encoding='utf-8') as f:
+with open(DATA_FILE, "w", encoding="utf-8") as f:
     json.dump(books, f, ensure_ascii=False, indent=2)
-
 print(f"\n=== Done. Scraped {len(books)} books. ===")

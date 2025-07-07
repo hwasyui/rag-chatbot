@@ -1,14 +1,16 @@
-import json
-from langchain_community.vectorstores import FAISS
+from pymongo import MongoClient
 from langchain.docstore.document import Document
 from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
 
-def load_books(json_path: str):
-    with open(json_path, "r", encoding="utf-8") as f:
-        books = json.load(f)
+def load_books_from_mongo():
+    uri = "mongodb+srv://saikikukusuo:saikisaiki@rag-fantasy-books.kmivnbs.mongodb.net/"
+    client = MongoClient(uri)
+    db = client["fantasy_books_db"]
+    collection = db["books"]
 
     docs = []
-    for book in books:
+    for book in collection.find():
         full_text = f"""
 Title: {book.get('title', '')}
 Author: {book.get('author', '')}

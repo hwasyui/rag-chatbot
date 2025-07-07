@@ -1,23 +1,24 @@
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 import os
 
-from chatbot import load_books, create_faiss_index
+from chatbot import load_books_from_mongo, create_faiss_index
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 import markdown
-
+from starlette.middleware.sessions import SessionMiddleware
 
 # Load .env
 load_dotenv()
 os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
 # Load documents and FAISS index
-docs = load_books("data/cleaned_fantasy_books.json")
+docs = load_books_from_mongo()
 vectorstore = create_faiss_index(docs)
 retriever = vectorstore.as_retriever(search_type="similarity", k=3)
 
@@ -34,6 +35,7 @@ qa_chain = ConversationalRetrievalChain.from_llm(
 
 # FastAPI setup
 app = FastAPI()
+app.add_middleware(SessionMiddleware, secret_key="super-secret-session-key")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
@@ -42,6 +44,8 @@ chat_log = []
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
+    # Get chat from session
+    chat_log = request.session.get("chat_log", [])
     return templates.TemplateResponse("index.html", {"request": request, "chat": chat_log, "books": []})
 
 @app.post("/", response_class=HTMLResponse)
@@ -50,8 +54,10 @@ async def chat(request: Request, question: str = Form(...)):
     raw_answer = result["answer"]
     answer = markdown.markdown(raw_answer)
 
-    # Store user + bot message
+    # Update session chat log
+    chat_log = request.session.get("chat_log", [])
     chat_log.append({"question": question, "answer": answer})
+    request.session["chat_log"] = chat_log
 
     # Fetch retrieved docs
     docs = retriever.invoke(answer)
@@ -73,3 +79,8 @@ async def chat(request: Request, question: str = Form(...)):
         "chat": chat_log,
         "books": books
     })
+
+@app.post("/delete", response_class=HTMLResponse)
+async def delete_chat(request: Request):
+    request.session["chat_log"] = []
+    return RedirectResponse(url="/", status_code=303)

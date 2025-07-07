@@ -21,7 +21,7 @@ if os.path.exists(DATA_FILE):
     with open(DATA_FILE, "r", encoding="utf-8") as f:
         books = json.load(f)
 
-for page in range(181, 201): 
+for page in range(1, 201): 
     print(f"\n=== Scraping page {page} ===")
     driver.get(BASE_URL.format(page))
     WebDriverWait(driver, 10).until(

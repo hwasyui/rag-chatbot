@@ -9,7 +9,7 @@ client = MongoClient(uri)
 db = client["fantasy_books_db"]        
 collection = db["books"]               
 
-# ---- Step 2: Load JSON ----
+# ---- Step 2: Load JSON ----mo
 with open("./data/cleaned_fantasy_books.json", "r", encoding="utf-8") as f:
     books_data = json.load(f)
 

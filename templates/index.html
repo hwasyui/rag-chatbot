@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fantasy Book Chatbot</title>
+  <style>
+    body { font-family: sans-serif; background-color: #fefefe; padding: 2rem; }
+    input[type="text"] { width: 60%; padding: 0.5rem; }
+    button { padding: 0.5rem 1rem; }
+    .chat-log { margin-top: 2rem; }
+    .chat-entry { margin-bottom: 1rem; }
+    .chat-entry p { margin: 0.2rem 0; }
+    .book-results { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
+    .book { border: 1px solid #ddd; padding: 1rem; border-radius: 8px; width: 200px; text-align: center; }
+    .book img { width: 120px; height: auto; }
+  </style>
+</head>
+<body>
+  <h1>📚 Fantasy Book Chatbot</h1>
+
+  <form method="post">
+    <input type="text" name="question" placeholder="Ask me anything about fantasy books..." required>
+    <button type="submit">Ask</button>
+  </form>
+
+  {% if chat %}
+    <div class="chat-log">
+      {% for pair in chat %}
+        <div class="chat-entry">
+          <p><strong>You:</strong> {{ pair.question }}</p>
+          <p><strong>Bot:</strong> {{ pair.answer }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if books %}
+    <h2>🔎 Related Books</h2>
+    <div class="book-results">
+      {% for book in books %}
+        <div class="book">
+          <img src="{{ book.image }}" alt="cover">
+          <p><strong>{{ book.title }}</strong></p>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</body>
+</html>

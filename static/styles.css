@@ -1,0 +1,38 @@
+body {
+  font-family: sans-serif;
+  background-color: #fefefe;
+  padding: 2rem;
+}
+
+input[type="text"] {
+  width: 60%;
+  padding: 0.5rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+}
+
+.chat-log p {
+  margin: 0.5rem 0;
+}
+
+.book-results {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.book {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 200px;
+  text-align: center;
+}
+
+.book img {
+  width: 120px;
+  height: auto;
+}

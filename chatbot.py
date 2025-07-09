@@ -6,8 +6,13 @@ import os
 from dotenv import load_dotenv
 import shutil
 
-load_dotenv()
+# Only load .env if running locally
+if os.getenv("RAILWAY_ENVIRONMENT") is None:
+    load_dotenv()
+
 uri = os.getenv("MONGO_URI")
+if not uri:
+    raise ValueError("MONGO_URI not found in environment variables")
 
 def load_books_from_mongo():
     uri = os.getenv("MONGO_URI")

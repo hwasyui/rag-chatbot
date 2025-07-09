@@ -11,6 +11,8 @@ if os.getenv("RAILWAY_ENVIRONMENT") is None:
     load_dotenv()
 
 uri = os.getenv("MONGO_URI")
+# Print debug
+print("DEBUG: MONGO_URI =", os.getenv("MONGO_URI"))
 if not uri:
     raise ValueError("MONGO_URI not found in environment variables")
 

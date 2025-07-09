@@ -5,8 +5,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 import os
-
-from chatbot import load_books_from_mongo, create_faiss_index
+from chatbot import load_books_from_mongo, load_faiss_index
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
@@ -15,11 +14,10 @@ from starlette.middleware.sessions import SessionMiddleware
 
 # Load .env
 load_dotenv()
-os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
 # Load documents and FAISS index
 docs = load_books_from_mongo()
-vectorstore = create_faiss_index(docs)
+vectorstore = load_faiss_index()
 retriever = vectorstore.as_retriever(search_type="similarity", k=3)
 
 # Initialize LLM and memory

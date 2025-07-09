@@ -1,0 +1,134 @@
+ body {
+   font-family: 'Inter', sans-serif;
+   background: #f4f6f9;
+   color: #333;
+   padding: 2rem;
+   max-width: 1000px;
+   margin: auto;
+ }
+
+ h1 {
+   font-size: 2rem;
+   font-weight: 600;
+   margin-bottom: 1.5rem;
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+   color: #2c3e50;
+ }
+
+ form {
+   display: flex;
+   gap: 1rem;
+   margin-bottom: 2rem;
+ }
+
+ input[type="text"] {
+   flex: 1;
+   padding: 0.75rem 1rem;
+   border: 1px solid #ccc;
+   border-radius: 8px;
+   font-size: 1rem;
+   background: white;
+   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+ }
+
+ button {
+   background-color: rgb(62, 174, 245);
+   color: white;
+   border: none;
+   border-radius: 8px;
+   padding: 0.75rem 1.25rem;
+   font-size: 1rem;
+   cursor: pointer;
+   transition: background-color 0.3s ease;
+ }
+
+ button:hover {
+   background-color: rgb(35, 161, 239);
+ }
+
+ .chat-log {
+   margin-top: 2rem;
+   border-top: 1px solid #ddd;
+   padding-top: 1.5rem;
+ }
+
+ .chat-entry {
+   background: white;
+   border: 1px solid #eee;
+   border-radius: 8px;
+   padding: 1rem;
+   margin-bottom: 1rem;
+   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
+ }
+
+ .chat-entry p {
+   margin: 0.4rem 0;
+ }
+
+ .chat-entry strong {
+   color: #1e293b;
+ }
+
+ .book-results {
+   display: flex;
+   gap: 1rem;
+   flex-wrap: wrap;
+   margin-top: 2rem;
+ }
+
+ .book {
+   background: white;
+   border: 1px solid #ddd;
+   border-radius: 10px;
+   padding: 1rem;
+   width: 200px;
+   text-align: center;
+   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+   transition: transform 0.2s;
+ }
+
+ .book:hover {
+   transform: translateY(-4px);
+ }
+
+ .book img {
+   width: 120px;
+   height: auto;
+   margin-bottom: 0.5rem;
+   border-radius: 4px;
+ }
+
+ .book p {
+   font-size: 0.9rem;
+   margin: 0.3rem 0;
+ }
+
+ .book strong {
+   font-size: 1rem;
+   color: #2d3748;
+ }
+
+ .book em {
+   color: #64748b;
+ }
+
+ .related-title {
+   font-size: 1.5rem;
+   font-weight: 600;
+   margin-top: 3rem;
+   margin-bottom: 1rem;
+   color: #374151;
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+ }
+
+ button[type="submit"][formaction="/delete"] {
+   background-color: #f87171;
+ }
+
+ button[type="submit"][formaction="/delete"]:hover {
+   background-color: #ef4444;
+ }

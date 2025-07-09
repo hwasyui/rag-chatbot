@@ -2,9 +2,14 @@ from pymongo import MongoClient
 from langchain.docstore.document import Document
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+uri = os.getenv("MONGO_URI")
 
 def load_books_from_mongo():
-    uri = "mongodb+srv://saikikukusuo:saikisaiki@rag-fantasy-books.kmivnbs.mongodb.net/"
+    uri = os.getenv("MONGO_URI")
     client = MongoClient(uri)
     db = client["fantasy_books_db"]
     collection = db["books"]
@@ -35,7 +40,12 @@ Subjects: {', '.join(book.get('subjects', [])) if isinstance(book.get('subjects'
 
     return docs
 
-def create_faiss_index(docs):
+def create_and_save_faiss(docs, index_path="vectorstore"):
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     vectorstore = FAISS.from_documents(docs, embedding_model)
+    vectorstore.save_local(index_path)
+
+def load_faiss_index(index_path="vectorstore"):
+    embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    vectorstore = FAISS.load_local(index_path, embedding_model, allow_dangerous_deserialization=True)
     return vectorstore

@@ -17,7 +17,6 @@ from starlette.middleware.sessions import SessionMiddleware
 load_dotenv()
 
 # Load documents and FAISS index
-docs = load_books_from_mongo()
 vectorstore = load_faiss_index()
 retriever = vectorstore.as_retriever(search_type="similarity", k=3)
 
@@ -64,13 +63,14 @@ async def chat(request: Request, question: str = Form(...)):
     request.session["chat_log"] = chat_log
 
     # Fetch retrieved docs
-    docs = result["source_documents"] if "source_documents" in result else []
+    retrieved_docs = result["source_documents"] if "source_documents" in result else []
 
     # DEBUG: Print metadata to console
-    for doc in docs:
-        print("TITLE:", doc.metadata.get("title"))
-        print("AUTHOR:", doc.metadata.get("author"))
-        print("TEXT:", doc.page_content[:100])
+    for doc in retrieved_docs:
+        print("======== RETRIEVED DOC ========")
+        print("PAGE CONTENT PREVIEW:\n", doc.page_content[:200])
+        print("FULL METADATA:", doc.metadata)
+        print("================================\n")
     books = [
         {
             "title": doc.metadata.get("title"),
@@ -81,7 +81,7 @@ async def chat(request: Request, question: str = Form(...)):
             "rating_count": doc.metadata.get("rating_count"),
             "text": doc.page_content
         }
-        for doc in docs
+        for doc in retrieved_docs
     ]
 
     return templates.TemplateResponse("index.html", {

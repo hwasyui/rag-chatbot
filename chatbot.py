@@ -21,6 +21,7 @@ Title: {book.get('title', '')}
 Author: {book.get('author', '')}
 Description: {book.get('description', '') if book.get('description', '') else ', '.join(book.get('subjects', []))[:300]}
 Publisher: {book.get('publisher', '')}
+Publish Date: {book.get('publish_date', '')} 
 Language: {book.get('language', '')}
 Rating: {book.get('rating_score', '')} ({book.get('rating_count', '')} votes)
 Pages: {book.get('pages', '')}
@@ -33,7 +34,12 @@ Subjects: {', '.join(book.get('subjects', [])) if isinstance(book.get('subjects'
             "rating_count": book.get("rating_count", 0),
             "author": book.get("author", ""),
             "description": book.get("description", ""),
-            "rating_score": book.get("rating_score", 0)
+            "rating_score": book.get("rating_score", 0),
+            "publish_date": book.get("publish_date", ""),
+            "language": book.get("language", ""),
+            "publisher": book.get("publisher", ""),
+            "pages": book.get("pages", 0),
+            "subjects": book.get("subjects", []),
         }
 
         docs.append(Document(page_content=full_text, metadata=metadata))

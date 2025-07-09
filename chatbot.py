@@ -4,6 +4,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 import os
 from dotenv import load_dotenv
+import shutil
 
 load_dotenv()
 uri = os.getenv("MONGO_URI")
@@ -47,6 +48,8 @@ Subjects: {', '.join(book.get('subjects', [])) if isinstance(book.get('subjects'
     return docs
 
 def create_and_save_faiss(docs, index_path="vectorstore"):
+    if os.path.exists(index_path):
+        shutil.rmtree(index_path)  
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     vectorstore = FAISS.from_documents(docs, embedding_model)
     vectorstore.save_local(index_path)

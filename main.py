@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import FileResponse
 from dotenv import load_dotenv
 import os
 from chatbot import load_books_from_mongo, load_faiss_index
@@ -35,6 +36,9 @@ qa_chain = ConversationalRetrievalChain.from_llm(
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key="super-secret-session-key")
 app.mount("/static", StaticFiles(directory="static"), name="static")
+@app.get("/favicon.ico")
+async def favicon():
+    return FileResponse("static/favicon.ico")
 templates = Jinja2Templates(directory="templates")
 
 # Store full chat log in memory for frontend

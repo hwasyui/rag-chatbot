@@ -8,15 +8,33 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="/static/styles.css">
 </head>
+<script>
+  const form = document.getElementById('chat-form');
+  const input = document.getElementById('question-input');
+  const askBtn = document.getElementById('ask-btn');
+  const clearBtn = document.getElementById('clear-btn');
 
+  askBtn.addEventListener('click', () => {
+    input.required = true;  
+  });
+
+  clearBtn.addEventListener('click', () => {
+    input.required = false; 
+  });
+</script>
 <body>
   <h1><i class="fas fa-hat-wizard"></i> Fantasy Book Chatbot</h1>
-  <form method="post" style="display: flex; gap: 1rem; margin-bottom: 2rem; width: 100%;">
-    <input type="text" name="question" placeholder="Ask me anything about fantasy books..." required style="flex: 1;">
-    <button type="submit" style="flex: none;"><i class="fas fa-paper-plane"></i> Ask</button>
-    <button type="submit" formaction="/delete" style="background-color: #f87171; flex: none;"><i
-        class="fas fa-trash"></i> Clear Chat</button>
-  </form>
+  <form method="post" id="chat-form" style="display: flex; gap: 1rem; margin-bottom: 2rem; width: 100%;">
+  <input type="text" id="question-input" name="question" placeholder="Ask me anything about fantasy books..." style="flex: 1;">
+  
+  <button type="submit" id="ask-btn" style="flex: none;">
+    <i class="fas fa-paper-plane"></i> Ask
+  </button>
+  
+  <button type="submit" formaction="/delete" id="clear-btn" style="background-color: #f87171; flex: none;">
+    <i class="fas fa-trash"></i> Clear Chat
+  </button>
+</form>
 
 
   {% if chat %}

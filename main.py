@@ -22,14 +22,16 @@ vectorstore = load_faiss_index()
 retriever = vectorstore.as_retriever(search_type="similarity", k=3)
 
 # Initialize LLM and memory
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
-memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-pro")
+memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True, output_key="answer")
 
 # Create conversational chain
 qa_chain = ConversationalRetrievalChain.from_llm(
     llm=llm,
     retriever=retriever,
-    memory=memory
+    memory=memory,
+    return_source_documents=True,
+    output_key="answer"
 )
 
 # FastAPI setup
@@ -62,7 +64,13 @@ async def chat(request: Request, question: str = Form(...)):
     request.session["chat_log"] = chat_log
 
     # Fetch retrieved docs
-    docs = retriever.invoke(answer)
+    docs = result["source_documents"] if "source_documents" in result else []
+
+    # DEBUG: Print metadata to console
+    for doc in docs:
+        print("TITLE:", doc.metadata.get("title"))
+        print("AUTHOR:", doc.metadata.get("author"))
+        print("TEXT:", doc.page_content[:100])
     books = [
         {
             "title": doc.metadata.get("title"),
